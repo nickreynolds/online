@@ -17,7 +17,11 @@ export function Tasks() {
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const queryClient = useQueryClient();
 
-  const { data: tasks, isLoading, error } = useQuery<Task[]>({
+  const {
+    data: tasks,
+    isLoading,
+    error,
+  } = useQuery<Task[]>({
     queryKey: ["tasks"],
     queryFn: async () => {
       console.log("Fetching tasks...");
@@ -27,11 +31,10 @@ export function Tasks() {
     },
   });
 
-  
   const createTaskMutation = useMutation({
     mutationFn: async (title: string) => {
-    console.log("title: ", title)
-      const response = await createUserTask({ data: { title } })
+      console.log("title: ", title);
+      const response = await createUserTask({ data: { title } });
       return response;
     },
     onSuccess: () => {
@@ -42,8 +45,8 @@ export function Tasks() {
 
   const toggleTaskMutation = useMutation({
     mutationFn: async ({ id }: { id: string; completed: boolean }) => {
-      const response = await toggleUserTask({ data: { id }})
-        return response;
+      const response = await toggleUserTask({ data: { id } });
+      return response;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
@@ -53,7 +56,6 @@ export function Tasks() {
   if (error) {
     return <div>Error loading tasks: {error.message}</div>;
   }
-
 
   if (isLoading) return <div>Loading tasks...</div>;
 
@@ -69,8 +71,8 @@ export function Tasks() {
         />
         <Button
           onClick={() => {
-            createTaskMutation.mutate(newTaskTitle)
-        }}
+            createTaskMutation.mutate(newTaskTitle);
+          }}
           disabled={!newTaskTitle.trim()}
         >
           Add Task
@@ -79,10 +81,7 @@ export function Tasks() {
 
       <div className="flex flex-col gap-2">
         {tasks?.map((task) => (
-          <div
-            key={task.id}
-            className="flex items-center gap-2 rounded-md border p-3"
-          >
+          <div key={task.id} className="flex items-center gap-2 rounded-md border p-3">
             <input
               type="checkbox"
               checked={task.completed}
@@ -90,9 +89,8 @@ export function Tasks() {
                 toggleTaskMutation.mutate({
                   id: task.id,
                   completed: !task.completed,
-                })
-            }
-              }
+                });
+              }}
               className="h-4 w-4"
             />
             <span className={task.completed ? "line-through opacity-50" : ""}>
@@ -103,4 +101,4 @@ export function Tasks() {
       </div>
     </div>
   );
-} 
+}

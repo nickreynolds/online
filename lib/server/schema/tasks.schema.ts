@@ -11,4 +11,4 @@ export const task = pgTable("task", {
   creatorId: text("creator_id")
     .notNull()
     .references(() => user.id),
-}); 
+});
