@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Tasks } from "~/lib/components/Tasks";
 
 export const Route = createFileRoute("/dashboard/")({
   component: DashboardIndex,
@@ -6,11 +7,9 @@ export const Route = createFileRoute("/dashboard/")({
 
 function DashboardIndex() {
   return (
-    <div className="flex flex-col gap-1">
-      Dashboard index page
-      <pre className="rounded-md border bg-card p-1 text-card-foreground">
-        routes/dashboard/index.tsx
-      </pre>
+    <div className="flex flex-col gap-4">
+      <h2 className="text-2xl font-bold">Your Tasks</h2>
+      <Tasks />
     </div>
   );
 }
