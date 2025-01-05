@@ -45,7 +45,7 @@ export function RecurringTaskItem({ task }: RecurringTaskItemProps) {
   });
 
   return (
-    <div className="group flex items-center gap-2 rounded-md border p-3">
+    <div className="group -mx-6 flex items-center gap-2 rounded-md border p-3 md:mx-0">
       <Button
         variant="ghost"
         size="sm"
