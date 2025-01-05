@@ -161,3 +161,37 @@ export const getRecurringTasks = createServerFn({ method: "GET" })
 
     return tasks;
   });
+
+export const deleteUserTask = createServerFn({ method: "DELETE" })
+  .middleware([authMiddleware])
+  .validator((data: unknown): { id: string } => {
+    return data as { id: string };
+  })
+  .handler(async ({ context, data }) => {
+    const { user } = context;
+    if (!user) {
+      throw new Error("Unauthorized");
+    }
+
+    await db.delete(task).where(and(eq(task.id, data.id), eq(task.creatorId, user.id)));
+
+    return { success: true };
+  });
+
+export const deleteRecurringTask = createServerFn({ method: "DELETE" })
+  .middleware([authMiddleware])
+  .validator((data: unknown): { id: string } => {
+    return data as { id: string };
+  })
+  .handler(async ({ context, data }) => {
+    const { user } = context;
+    if (!user) {
+      throw new Error("Unauthorized");
+    }
+
+    await db
+      .delete(recurringTask)
+      .where(and(eq(recurringTask.id, data.id), eq(recurringTask.creatorId, user.id)));
+
+    return { success: true };
+  });

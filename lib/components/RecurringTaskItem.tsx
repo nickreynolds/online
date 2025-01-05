@@ -1,7 +1,8 @@
 import { Button } from "./ui/button";
 import type { RecurringTask } from "./Tasks";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { completeRecurringTask } from "../server/tasks.js";
+import { completeRecurringTask, deleteRecurringTask } from "../server/tasks";
+import { Trash2 } from "lucide-react";
 
 interface RecurringTaskItemProps {
   task: RecurringTask;
@@ -21,7 +22,6 @@ function formatTimeUntil(date: Date): string {
 
 export function RecurringTaskItem({ task }: RecurringTaskItemProps) {
   const isOverdue = new Date() > new Date(task.nextDue);
-
   const queryClient = useQueryClient();
 
   const toggleTaskMutation = useMutation({
@@ -34,8 +34,18 @@ export function RecurringTaskItem({ task }: RecurringTaskItemProps) {
     },
   });
 
+  const deleteTaskMutation = useMutation({
+    mutationFn: async ({ id }: { id: string }) => {
+      const response = await deleteRecurringTask({ data: { id } });
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["recurring-tasks"] });
+    },
+  });
+
   return (
-    <div className="flex items-center gap-2 rounded-md border p-3">
+    <div className="group flex items-center gap-2 rounded-md border p-3">
       <Button
         variant="ghost"
         size="sm"
@@ -59,6 +69,18 @@ export function RecurringTaskItem({ task }: RecurringTaskItemProps) {
       <span className="ml-auto text-sm text-gray-500">
         Every {task.frequencyHours} hours
       </span>
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => {
+          if (confirm("Are you sure you want to delete this recurring task?")) {
+            deleteTaskMutation.mutate({ id: task.id });
+          }
+        }}
+        className="text-destructive opacity-0 transition-opacity hover:bg-destructive/10 group-hover:opacity-100"
+      >
+        <Trash2 className="size-4" />
+      </Button>
     </div>
   );
 }
