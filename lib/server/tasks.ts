@@ -162,7 +162,7 @@ export const getRecurringTasks = createServerFn({ method: "GET" })
     return tasks;
   });
 
-export const deleteUserTask = createServerFn({ method: "DELETE" })
+export const deleteUserTask = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
   .validator((data: unknown): { id: string } => {
     return data as { id: string };
@@ -178,7 +178,7 @@ export const deleteUserTask = createServerFn({ method: "DELETE" })
     return { success: true };
   });
 
-export const deleteRecurringTask = createServerFn({ method: "DELETE" })
+export const deleteRecurringTask = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
   .validator((data: unknown): { id: string } => {
     return data as { id: string };
